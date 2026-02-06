@@ -3,10 +3,10 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(ConfigurableJoint))]
 [RequireComponent(typeof(LineRenderer))]
-public class CraneSystem : MonoBehaviour
+public class RopeSystem : MonoBehaviour
 {
     [Header("Setup")]
-    public Transform trolley;        // Drag your Trolley object here
+    public Transform trolley;        
     public string targetTag = "Pickable";
 
     [Header("Winch Settings")]
@@ -17,7 +17,7 @@ public class CraneSystem : MonoBehaviour
     [Header("Hook Settings")]
     public float grabRadius = 1.5f;
 
-    // Internal variables
+    
     private ConfigurableJoint joint;
     private LineRenderer lineRenderer;
     private FixedJoint grabJoint;
@@ -28,7 +28,7 @@ public class CraneSystem : MonoBehaviour
         joint = GetComponent<ConfigurableJoint>();
         lineRenderer = GetComponent<LineRenderer>();
 
-        // Ensure the joint is set up correctly automatically
+        
         joint.connectedBody = trolley.GetComponent<Rigidbody>();
         joint.autoConfigureConnectedAnchor = false;
         joint.anchor = Vector3.zero;
@@ -42,33 +42,31 @@ public class CraneSystem : MonoBehaviour
         HandleGrabInput();
     }
 
-    // 1. Controls the cable length (W/S or Arrow Keys)
+    
     void HandleWinch()
     {
-        float input = Input.GetAxis("Vertical"); // W = 1, S = -1
+        float input = Input.GetAxis("Vertical"); 
 
-        // We modify the SoftJointLimit
+       
         SoftJointLimit limit = joint.linearLimit;
 
-        // If pressing W (up), decrease limit. If S (down), increase limit.
-        // Note: We use -= because smaller limit means shorter rope.
+        
         limit.limit -= input * winchSpeed * Time.deltaTime;
 
-        // Clamp values so we don't break physics
+        
         limit.limit = Mathf.Clamp(limit.limit, minLength, maxLength);
 
-        // Apply back to joint
+       
         joint.linearLimit = limit;
     }
 
-    // 2. Draws the line from Trolley to Hook
+    
     void HandleVisuals()
     {
-        lineRenderer.SetPosition(0, trolley.position); // Start at Trolley
-        lineRenderer.SetPosition(1, transform.position); // End at Hook
+        lineRenderer.SetPosition(0, trolley.position); 
+        lineRenderer.SetPosition(1, transform.position); 
     }
 
-    // 3. Logic for Q (Grab) and E (Release)
     void HandleGrabInput()
     {
         if (Input.GetKeyDown(KeyCode.Q)) TryGrab();
@@ -77,17 +75,17 @@ public class CraneSystem : MonoBehaviour
 
     void TryGrab()
     {
-        if (grabJoint != null) return; // Already holding something
+        if (grabJoint != null) return; 
 
         Collider[] colliders = Physics.OverlapSphere(transform.position, grabRadius);
         foreach (Collider col in colliders)
         {
             if (col.CompareTag(targetTag) && col.GetComponent<Rigidbody>())
             {
-                // Grab the object
+                
                 currentLoad = col.GetComponent<Rigidbody>();
 
-                // Create a FixedJoint to lock it to the hook
+                
                 grabJoint = gameObject.AddComponent<FixedJoint>();
                 grabJoint.connectedBody = currentLoad;
 
@@ -107,7 +105,7 @@ public class CraneSystem : MonoBehaviour
         Debug.Log("Released");
     }
 
-    // Visualize grab radius in Editor
+    
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;

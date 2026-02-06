@@ -10,9 +10,9 @@ public class CraneControlStick : MonoBehaviour
     void Update()
     {
         // Up Arrow = +1, Down Arrow = -1
-        if (Input.GetKey(KeyCode.UpArrow))
+        if (Input.GetKey(KeyCode.A))
             currentInput = 1f;
-        else if (Input.GetKey(KeyCode.DownArrow))
+        else if (Input.GetKey(KeyCode.D))
             currentInput = -1f;
         else
             currentInput = 0f;

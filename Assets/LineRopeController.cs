@@ -2,12 +2,12 @@ using UnityEngine;
 
 public class LineRopeController : MonoBehaviour
 {
-    public Transform ropeTop;    // Fixed point at crane top
-    public Transform hook;       // Hook object
-    public float speed = 2f;     // Hook up/down speed
-    public float minY = 0.5f;    // Lowest Y position of hook
-    public float maxY = 5f;      // Highest Y position of hook
-    public int segments = 20;    // Number of points in the rope
+    public Transform ropeTop;    
+    public Transform hook;       
+    public float speed = 2f;     
+    public float minY = 0.5f;    
+    public float maxY = 5f;     
+    public int segments = 20;    
 
     private LineRenderer lineRenderer;
     private Vector3[] points;
@@ -23,18 +23,18 @@ public class LineRopeController : MonoBehaviour
 
     void Update()
     {
-        // Hook up/down movement
+        
         float move = 0f;
         if (Input.GetKey(KeyCode.W))
             move = -speed * Time.deltaTime;
         else if (Input.GetKey(KeyCode.S))
             move = speed * Time.deltaTime;
 
-        Vector3 newHookPos = hook.position + Vector3.down * move; // move down for S, up for W
+        Vector3 newHookPos = hook.position + Vector3.down * move; 
         newHookPos.y = Mathf.Clamp(newHookPos.y, minY, maxY);
         hook.position = newHookPos;
 
-        // Update rope visuals
+       
         UpdateRope();
     }
 
