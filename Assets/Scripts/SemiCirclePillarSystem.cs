@@ -1,23 +1,36 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class SemiCirclePillarSystem : MonoBehaviour
 {
     [Header("Crane Reference")]
     public Transform cranePivot;
 
-    [Header("Obstacle")]
+    [Header("Obstacle Prefab")]
     public GameObject pillarPrefab;
 
-    [Header("Arc Settings")]
-    public int obstacleCount = 9;
-    public float radius = 6f;
+    [Header("Spawn Count")]
+    public int obstacleCount = 6;
+
+    [Header("Arc Area")]
+    public float minRadius = 4f;
+    public float maxRadius = 9f;
     public float groundY = 0f;
 
-    [Header("Pillar Settings")]
+    [Header("Anti-Merge Settings")]
+    public float extraGap = 0.6f;          // extra safety gap
+    public int maxSpawnAttempts = 150;
+
+    [Header("Pillar Height")]
     public float stepHeight = 1.2f;
+
+    [Header("Pillar Fatness (Inspector)")]
+    public float baseWidth = 2.5f;
+
+    [Header("Rise Animation")]
     public float riseSpeed = 3f;
-    public float delayBeforeRise = 0.3f;
+    public float delayBeforeRise = 0.25f;
 
     void Start()
     {
@@ -26,42 +39,75 @@ public class SemiCirclePillarSystem : MonoBehaviour
 
     void SpawnPillars()
     {
-        float angleStep = 180f / (obstacleCount - 1);
-
-        for (int i = 0; i < obstacleCount; i++)
+        if (cranePivot == null || pillarPrefab == null)
         {
-            float angle = -90f + i * angleStep;
+            Debug.LogError("Crane Pivot or Pillar Prefab not assigned!");
+            return;
+        }
 
-            Vector3 dir =
-                Quaternion.Euler(0f, angle, 0f) * cranePivot.forward;
+        List<Vector3> usedPositions = new List<Vector3>();
 
-            Vector3 spawnPos =
-                cranePivot.position + dir.normalized * radius;
+        int spawned = 0;
+        int attempts = 0;
 
+        float pillarRadius = baseWidth * 0.5f;
+
+        while (spawned < obstacleCount && attempts < maxSpawnAttempts)
+        {
+            attempts++;
+
+            // Random angle inside -90 to +90
+            float angle = Random.Range(-90f, 90f);
+            Vector3 dir = Quaternion.Euler(0f, angle, 0f) * cranePivot.forward;
+
+            // Random distance
+            float radius = Random.Range(minRadius, maxRadius);
+
+            Vector3 spawnPos = cranePivot.position + dir.normalized * radius;
             spawnPos.y = groundY;
 
-            GameObject pillar = Instantiate(
-                pillarPrefab,
-                spawnPos,
-                Quaternion.identity
-            );
+            // ---- SIZE-AWARE DISTANCE CHECK ----
+            bool tooClose = false;
 
-            
+            foreach (Vector3 pos in usedPositions)
+            {
+                float requiredDistance =
+                    (pillarRadius * 2f) + extraGap;
 
+                if (Vector3.Distance(pos, spawnPos) < requiredDistance)
+                {
+                    tooClose = true;
+                    break;
+                }
+            }
+
+            if (tooClose) continue;
+
+            // Spawn pillar
+            GameObject pillar = Instantiate(pillarPrefab, spawnPos, Quaternion.identity);
             StartCoroutine(HandlePillar(pillar));
+
+            usedPositions.Add(spawnPos);
+            spawned++;
+        }
+
+        if (spawned < obstacleCount)
+        {
+            Debug.LogWarning(
+                "Not all pillars spawned. Increase radius or reduce extraGap."
+            );
         }
     }
 
     IEnumerator HandlePillar(GameObject pillar)
     {
-        Transform mesh = pillar.transform.GetChild(0); // Mesh child
+        Transform mesh = pillar.transform.GetChild(0);
         Renderer rend = mesh.GetComponent<Renderer>();
 
-        // RANDOM TYPE
         int rand = Random.Range(0, 3);
 
-        int steps = 1;
-        Color color = Color.green;
+        int steps;
+        Color color;
 
         if (rand == 0)
         {
@@ -81,12 +127,16 @@ public class SemiCirclePillarSystem : MonoBehaviour
 
         rend.material.color = color;
 
-        // SCALE HEIGHT
-        Vector3 scale = mesh.localScale;
-        scale.y = steps * stepHeight;
+        // SCALE (FAT + HEIGHT)
+        Vector3 scale = new Vector3(
+            baseWidth,
+            steps * stepHeight,
+            baseWidth
+        );
+
         mesh.localScale = scale;
 
-        // START BELOW GROUND
+        // RISE FROM GROUND
         Vector3 startPos = pillar.transform.position;
         Vector3 targetPos = startPos + Vector3.up * (scale.y / 2f);
 
