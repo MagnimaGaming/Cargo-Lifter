@@ -7,6 +7,6 @@ public class ShowAnalytics : MonoBehaviour
 {
 
     [SerializeField] private GameAnalyticsCalculator analyticsCalculator;
-    [SerializeField] private TextMeshPro showAnalytics;
+    
 
 }
