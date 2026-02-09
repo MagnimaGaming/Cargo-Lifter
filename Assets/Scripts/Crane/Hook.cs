@@ -114,8 +114,6 @@ public class Hook : MonoBehaviour
 
         yield return new WaitForSeconds(2f);
 
-        transform.SetParent(null);
-
         foreach (GameObject c in cargoStack)
         {
             c.transform.SetParent(null);
@@ -123,7 +121,6 @@ public class Hook : MonoBehaviour
 
             if(rb)
                 rb.isKinematic = false;
-            rb.velocity = new Vector3(0, -1, 0);
         }
 
         cargoStack.Clear();
@@ -131,4 +128,5 @@ public class Hook : MonoBehaviour
         cargoContainerCollider.size = new Vector3(cargoContainerCollider.size.x, 0.1f, cargoContainerCollider.size.z);
         cargoContainerCollider.center = Vector3.zero;
     }
+
 }
