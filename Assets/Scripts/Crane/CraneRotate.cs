@@ -12,7 +12,7 @@ public class CraneRotate : MonoBehaviour
     void Start()
     {
         ResetRotation();
-        StopRotation();
+        StartRotation();
     }
 
     void Update()
@@ -23,8 +23,11 @@ public class CraneRotate : MonoBehaviour
 
         if (currentAngle >= endAngle)
         {
-            currentAngle = endAngle;
-            isRotating = false;
+            rotationSpeed *= -1f;
+        }
+        else if(currentAngle <= startAngle)
+        {
+            rotationSpeed *= -1f;
         }
 
         transform.localRotation = Quaternion.Euler(0f, currentAngle, 0f);

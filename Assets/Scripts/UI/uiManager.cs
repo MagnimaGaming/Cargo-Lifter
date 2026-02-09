@@ -20,7 +20,7 @@ public class uiManager : MonoBehaviour
     private void Start()
     {
 
-       GoToStart();
+       //GoToStart();
     }
 
 

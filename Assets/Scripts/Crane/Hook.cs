@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Timeline;
 using UnityEngine;
 
 public class Hook : MonoBehaviour
@@ -13,7 +14,6 @@ public class Hook : MonoBehaviour
     public float ropeSpeed = 2.0f;
     public float minLength = 1.0f;
     public float maxLength = 20.0f;
-    [SerializeField]private ConfigurableJoint joint;
     private LineRenderer lineRenderer;
     public Transform trolley;
 
@@ -34,10 +34,17 @@ public class Hook : MonoBehaviour
     void RopeControl()
     {
         float input = Input.GetAxis("Vertical");
-        SoftJointLimit limit = joint.linearLimit;
-        limit.limit -= input * ropeSpeed * Time.deltaTime;
-        limit.limit = Mathf.Clamp(limit.limit, minLength, maxLength);
-        joint.linearLimit = limit;
+
+        if(input <= 0.01f && input >= -0.01f)
+        {
+            crane.StartRotation();
+        }
+        else
+        {
+            crane.StopRotation();
+        }
+
+        hookObj.Translate(0, input * ropeSpeed * Time.deltaTime , 0);
 
         lineRenderer.SetPosition(0, trolley.position);
         lineRenderer.SetPosition(1, hookObj.position);
@@ -82,8 +89,8 @@ public class Hook : MonoBehaviour
 
         cargoStack.Add(cargo);
 
-        if (cargoStack.Count == 1)
-            crane.StartRotation();
+        //if (cargoStack.Count == 1)
+        //    crane.StartRotation();
 
 
         GrowTrigger();
