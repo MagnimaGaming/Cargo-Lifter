@@ -9,14 +9,13 @@ public class Hook : MonoBehaviour
     private List<GameObject> cargoStack = new List<GameObject>();
 
     private float cargoHeight = 1f;
-    [SerializeField] private CraneRotate crane;
-
     public float ropeSpeed = 2.0f;
     public float minLength = 1.0f;
     public float maxLength = 20.0f;
     private LineRenderer lineRenderer;
     public Transform trolley;
 
+    [SerializeField] private CraneRotate crane;
     [SerializeField] private Transform hookObj;
 
     private void Start()
@@ -56,7 +55,7 @@ public class Hook : MonoBehaviour
         {
             if (other.gameObject.tag == "DropZone")
                 {
-                    StartCoroutine(ReleaseCargo());
+                    ReleaseCargo();
             }
             return;
         }
@@ -108,11 +107,8 @@ public class Hook : MonoBehaviour
 
     }
 
-    private IEnumerator ReleaseCargo()
+    void ReleaseCargo()
     {
-
-
-        yield return new WaitForSeconds(2f);
 
         foreach (GameObject c in cargoStack)
         {
