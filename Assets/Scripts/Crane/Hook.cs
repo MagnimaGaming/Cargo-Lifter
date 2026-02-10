@@ -6,7 +6,7 @@ using UnityEngine;
 public class Hook : MonoBehaviour
 {
     private BoxCollider cargoContainerCollider;
-    private List<GameObject> cargoStack = new List<GameObject>();
+    public List<GameObject> cargoStack = new List<GameObject>();
 
     private float cargoHeight = 1f;
     public float ropeSpeed = 2.0f;
@@ -16,7 +16,6 @@ public class Hook : MonoBehaviour
     public Transform trolley;
 
     [SerializeField] private CraneRotate crane;
-    [SerializeField] private Transform hookObj;
 
     private void Start()
     {
@@ -43,31 +42,31 @@ public class Hook : MonoBehaviour
             crane.StopRotation();
         }
 
-        hookObj.Translate(0, input * ropeSpeed * Time.deltaTime , 0);
+        transform.Translate(0, input * ropeSpeed * Time.deltaTime , 0);
 
         lineRenderer.SetPosition(0, trolley.position);
-        lineRenderer.SetPosition(1, hookObj.position);
+        lineRenderer.SetPosition(1, transform.position);
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (!(other.gameObject.tag == "Cargo"))
-        {
-            if (other.gameObject.tag == "DropZone")
-                {
-                    ReleaseCargo();
-            }
-            return;
-        }
+    //private void OnTriggerEnter(Collider other)
+    //{
+    //    if (!(other.gameObject.tag == "Cargo"))
+    //    {
+    //        if (other.gameObject.tag == "DropZone")
+    //            {
+    //                ReleaseCargo();
+    //        }
+    //        return;
+    //    }
 
-        if (cargoStack.Contains(other.gameObject))
-            return;
+    //    if (cargoStack.Contains(other.gameObject))
+    //        return;
 
-        StackCargo(other.gameObject);
+    //    StackCargo(other.gameObject);
 
-    }
+    //}
 
-    void StackCargo(GameObject cargo)
+    public void StackCargo(GameObject cargo)
     {
         Rigidbody cargoRb = cargo.GetComponent<Rigidbody>();
 
@@ -107,7 +106,7 @@ public class Hook : MonoBehaviour
 
     }
 
-    void ReleaseCargo()
+    public void ReleaseCargo()
     {
 
         foreach (GameObject c in cargoStack)
