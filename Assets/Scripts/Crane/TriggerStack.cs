@@ -8,9 +8,11 @@ public class TriggerStack : MonoBehaviour
     [SerializeField] Hook hook;
     private void OnTriggerEnter(Collider other)
     {
+        
+
         if (!(other.gameObject.tag == "Cargo"))
         {
-            if (other.gameObject.tag == "DropZone")
+            if (other.gameObject.tag == "DropZone" && hook.cargoStack.Count > 0)
             {
                 hook.ReleaseCargo();
             }
