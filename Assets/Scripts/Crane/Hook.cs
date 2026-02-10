@@ -67,7 +67,8 @@ public class Hook : MonoBehaviour
         //}
 
         transform.Translate(0, input * ropeSpeed * Time.deltaTime, 0);
-
+        
+        //clamping y to prevent crossing boundaries
         float minY = trolley.position.y - maxLength;
         float maxY = trolley.position.y - minLength;
 
@@ -99,7 +100,7 @@ public class Hook : MonoBehaviour
 
         Vector3 localPos = Vector3.down * (index * cargoHeight + 0.5f * cargoHeight);
         cargo.transform.localPosition = localPos;
-        cargo.transform.localRotation = Quaternion.identity;
+        //cargo.transform.localRotation = Quaternion.identity;
 
         cargoStack.Add(cargo);
 
