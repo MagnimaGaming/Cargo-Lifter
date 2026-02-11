@@ -1,12 +1,15 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor.Timeline;
 using UnityEngine;
 
 public class Hook : MonoBehaviour
 {
-    private BoxCollider cargoContainerCollider;
-    private List<GameObject> cargoStack = new List<GameObject>();
+    [SerializeField] private GameObject cargoContainer;
+    BoxCollider cargoContainerCollider;
+    public List<GameObject> cargoStack = new List<GameObject>();
 
     private float cargoHeight = 1f;
     public float ropeSpeed = 2.0f;
@@ -14,15 +17,17 @@ public class Hook : MonoBehaviour
     public float maxLength = 20.0f;
     private LineRenderer lineRenderer;
     public Transform trolley;
+    public int totalCargoReleased = 0;
+
+    public bool isReleasing;
 
     [SerializeField] private CraneRotate crane;
-    [SerializeField] private Transform hookObj;
 
     private void Start()
     {
-        cargoContainerCollider = GetComponent<BoxCollider>();
+        cargoContainerCollider = cargoContainer.GetComponent<BoxCollider>();
         lineRenderer = GetComponent<LineRenderer>();
-
+        isReleasing = false;
     }
 
     private void Update()
@@ -32,6 +37,13 @@ public class Hook : MonoBehaviour
 
     void RopeControl()
     {
+        if (isReleasing)
+        {
+            crane.StopRotation();
+            return;
+        }
+
+
         float input = Input.GetAxis("Vertical");
 
         if(input <= 0.01f && input >= -0.01f)
@@ -39,35 +51,39 @@ public class Hook : MonoBehaviour
             crane.StartRotation();
         }
         else
-        {
+        {   
             crane.StopRotation();
         }
 
-        hookObj.Translate(0, input * ropeSpeed * Time.deltaTime , 0);
+        //float distanceFromTrolley = Math.Abs(transform.position.y - trolley.position.y);
+
+        //if (input > 0 && distanceFromTrolley < maxLength)
+        //{
+        //    transform.Translate(0, input * ropeSpeed * Time.deltaTime, 0);
+        //}
+        //if (input < 0 && distanceFromTrolley > minLength)
+        //{
+        //    transform.Translate(0, input * ropeSpeed * Time.deltaTime, 0);
+        //}
+
+        transform.Translate(0, input * ropeSpeed * Time.deltaTime, 0);
+        
+        //clamping y to prevent crossing boundaries
+        float minY = trolley.position.y - maxLength;
+        float maxY = trolley.position.y - minLength;
+
+        Vector3 pos = transform.position;
+
+        pos.y = Mathf.Clamp(pos.y, minY, maxY);
+
+        transform.position = pos;
 
         lineRenderer.SetPosition(0, trolley.position);
-        lineRenderer.SetPosition(1, hookObj.position);
+        lineRenderer.SetPosition(1, transform.position);
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (!(other.gameObject.tag == "Cargo"))
-        {
-            if (other.gameObject.tag == "DropZone")
-                {
-                    ReleaseCargo();
-            }
-            return;
-        }
 
-        if (cargoStack.Contains(other.gameObject))
-            return;
-
-        StackCargo(other.gameObject);
-
-    }
-
-    void StackCargo(GameObject cargo)
+    public void StackCargo(GameObject cargo)
     {
         Rigidbody cargoRb = cargo.GetComponent<Rigidbody>();
 
@@ -78,18 +94,15 @@ public class Hook : MonoBehaviour
             cargoRb.isKinematic = true;
         }
 
-        cargo.transform.SetParent(transform);
+        cargo.transform.SetParent(cargoContainer.transform);
 
         int index = cargoStack.Count;
 
         Vector3 localPos = Vector3.down * (index * cargoHeight + 0.5f * cargoHeight);
         cargo.transform.localPosition = localPos;
-        cargo.transform.localRotation = Quaternion.identity;
+        //cargo.transform.localRotation = Quaternion.identity;
 
         cargoStack.Add(cargo);
-
-        //if (cargoStack.Count == 1)
-        //    crane.StartRotation();
 
 
         GrowTrigger();
@@ -107,22 +120,40 @@ public class Hook : MonoBehaviour
 
     }
 
-    void ReleaseCargo()
+    public void ReleaseCargo()
     {
+        isReleasing = true;
+        cargoContainerCollider.enabled = false;
 
+
+        totalCargoReleased += cargoStack.Count;
         foreach (GameObject c in cargoStack)
         {
-            c.transform.SetParent(null);
+            c.transform.SetParent(null, true);
             Rigidbody rb = c.GetComponent<Rigidbody>();
+            c.tag = "ReleasedCargo";
 
-            if(rb)
+
+            if (rb)
                 rb.isKinematic = false;
+
         }
 
         cargoStack.Clear();
 
+        cargoContainerCollider.enabled = true;
+
+
         cargoContainerCollider.size = new Vector3(cargoContainerCollider.size.x, 0.1f, cargoContainerCollider.size.z);
         cargoContainerCollider.center = Vector3.zero;
+
+        Invoke("ReleaseComplete", 2f);
+    }
+
+
+    void ReleaseComplete()
+    {
+        isReleasing = false;
     }
 
 }
