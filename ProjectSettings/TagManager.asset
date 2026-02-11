@@ -9,6 +9,8 @@ TagManager:
   - Cargo
   - DropZone
   - ReleasedCargo
+  - Obstacle
+  - Hook
   layers:
   - Default
   - TransparentFX

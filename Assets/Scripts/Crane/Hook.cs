@@ -19,6 +19,7 @@ public class Hook : MonoBehaviour
     public Transform trolley;
     public int totalCargoReleased = 0;
 
+
     public bool isReleasing;
 
     [SerializeField] private CraneRotate crane;
@@ -27,6 +28,7 @@ public class Hook : MonoBehaviour
     {
         cargoContainerCollider = cargoContainer.GetComponent<BoxCollider>();
         lineRenderer = GetComponent<LineRenderer>();
+
         isReleasing = false;
     }
 
@@ -46,7 +48,7 @@ public class Hook : MonoBehaviour
 
         float input = Input.GetAxis("Vertical");
 
-        if(input <= 0.01f && input >= -0.01f)
+        if(input <= 0.01f && input >= -0.01f && !crane.isCollided)
         {
             crane.StartRotation();
         }
@@ -55,19 +57,13 @@ public class Hook : MonoBehaviour
             crane.StopRotation();
         }
 
-        //float distanceFromTrolley = Math.Abs(transform.position.y - trolley.position.y);
 
-        //if (input > 0 && distanceFromTrolley < maxLength)
-        //{
-        //    transform.Translate(0, input * ropeSpeed * Time.deltaTime, 0);
-        //}
-        //if (input < 0 && distanceFromTrolley > minLength)
-        //{
-        //    transform.Translate(0, input * ropeSpeed * Time.deltaTime, 0);
-        //}
 
         transform.Translate(0, input * ropeSpeed * Time.deltaTime, 0);
-        
+
+        //updating maxlentgh based on stack collider size
+        maxLength = (trolley.transform.position.y - cargoContainerCollider.size.y) - 0.5f;
+
         //clamping y to prevent crossing boundaries
         float minY = trolley.position.y - maxLength;
         float maxY = trolley.position.y - minLength;
@@ -93,7 +89,7 @@ public class Hook : MonoBehaviour
             cargoRb.angularVelocity = Vector3.zero;
             cargoRb.isKinematic = true;
         }
-
+        cargo.GetComponent<Collider>().isTrigger = false;
         cargo.transform.SetParent(cargoContainer.transform);
 
         int index = cargoStack.Count;
@@ -105,10 +101,10 @@ public class Hook : MonoBehaviour
         cargoStack.Add(cargo);
 
 
-        GrowTrigger();
+        GrowTrigger(cargo.transform);
     }
 
-    void GrowTrigger()
+    void GrowTrigger(Transform cargoTf)
     {
         Vector3 size = cargoContainerCollider.size;
         size.y = cargoStack.Count * cargoHeight;
