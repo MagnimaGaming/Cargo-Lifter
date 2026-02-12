@@ -8,6 +8,7 @@ public class CraneRotate : MonoBehaviour
 
     float currentAngle;
     bool isRotating;
+    public bool isCollided = false;
 
     void Start()
     {
@@ -25,7 +26,7 @@ public class CraneRotate : MonoBehaviour
         {
             rotationSpeed *= -1f;
         }
-        else if(currentAngle <= startAngle)
+        else if (currentAngle <= startAngle)
         {
             rotationSpeed *= -1f;
         }
@@ -41,6 +42,7 @@ public class CraneRotate : MonoBehaviour
 
     public void StartRotation()
     {
+
         isRotating = true;
     }
 
@@ -49,3 +51,4 @@ public class CraneRotate : MonoBehaviour
         isRotating = false;
     }
 }
+
