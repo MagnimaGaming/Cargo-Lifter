@@ -6,7 +6,4 @@ using TMPro;
 public class ShowAnalytics : MonoBehaviour
 {
 
-    [SerializeField] private GameAnalyticsCalculator analyticsCalculator;
-    
-
 }

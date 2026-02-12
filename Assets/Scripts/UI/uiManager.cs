@@ -16,18 +16,23 @@ public class uiManager : MonoBehaviour
     [SerializeField] private GameObject analyticsGraphTab;
     [SerializeField] private GameObject leaderBoard;
 
+    [SerializeField] public CraneRotate crane;
+    [SerializeField] public Hook hook;
+    [SerializeField] private GameManager gameManager;
 
     private void Start()
     {
-
-       //GoToStart();
+       GoToStart();
     }
 
 
     private void Update()
     {
-        if (Input.GetKeyUp(KeyCode.L))
-            ShowLeaderBoard();
+        if (gameManager.sessionEnded)
+        {
+            Invoke("ShowLeaderBoard", 2F);
+            crane.StopRotation();
+        }
     }
 
 
@@ -50,6 +55,8 @@ public class uiManager : MonoBehaviour
         // Load Beginner Level Scene
         diffSelectMenu.SetActive(false);
         pauseMenu.SetActive(false);
+        crane.StartRotation();
+        hook.isGameStarted = true;
     }
 
     public void LoadIntermediateLevel()
@@ -57,8 +64,8 @@ public class uiManager : MonoBehaviour
         //Load Inter Level Scene
         diffSelectMenu.SetActive(false);
         pauseMenu.SetActive(false);
-
-
+        crane.StartRotation();
+        hook.isGameStarted = true;
     }
 
     public void LoadExpertLevel()
@@ -67,14 +74,15 @@ public class uiManager : MonoBehaviour
         //Load expert level scene
         diffSelectMenu.SetActive(false);
         pauseMenu.SetActive(false);
-
-
+        crane.StartRotation();
+        hook.isGameStarted = true;
 
     }
 
     public void GoToStart()
     {
         startMenu.SetActive(true);
+        analyticsGraphTab.SetActive(false);
     }
 
     public void OpenSettingsMenu()

@@ -18,6 +18,7 @@ public class Hook : MonoBehaviour
     private LineRenderer lineRenderer;
     public Transform trolley;
     public int totalCargoReleased = 0;
+    public bool isGameStarted = false;
 
 
     public bool isReleasing;
@@ -48,7 +49,7 @@ public class Hook : MonoBehaviour
 
         float input = Input.GetAxis("Vertical");
 
-        if(input <= 0.01f && input >= -0.01f && !crane.isCollided)
+        if(input <= 0.01f && input >= -0.01f && !crane.isCollided && isGameStarted)
         {
             crane.StartRotation();
         }

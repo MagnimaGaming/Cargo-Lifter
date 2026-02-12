@@ -13,8 +13,7 @@ public class CraneRotate : MonoBehaviour
     void Start()
     {
         ResetRotation();
-        StartRotation();
-    }
+    } 
 
     void Update()
     {
