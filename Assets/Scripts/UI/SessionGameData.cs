@@ -4,9 +4,11 @@ using UnityEngine;
 public class SessionGameData : MonoBehaviour
 {
 
-    public int cargoDelivered;
-    public int collisionCount;
+    public int cargo;
+    public float time;
+    public float finalScore;
 
-    public float rewardPerCargo;
-    public float penalityPerCollision;
+    public int scorePerCargo = 100;
+    public int moneyPerCargo = 25;
+
 }
