@@ -19,6 +19,7 @@ public class Hook : MonoBehaviour
     public Transform trolley;
     public int totalCargoReleased = 0;
     public bool isGameStarted = false;
+    public float ObstacleCollisionCount = 0;
 
 
     public bool isReleasing;
