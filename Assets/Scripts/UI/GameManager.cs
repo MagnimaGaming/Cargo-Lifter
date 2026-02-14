@@ -12,9 +12,11 @@ public class GameManager : MonoBehaviour
     public int totalCargo = 3;
 
     [SerializeField] Hook hook;
-    [SerializeField] private SessionGameData data;
+    [SerializeField] private GameData data;
+    [SerializeField] private ShowAnalytics showAnalytics;
     [SerializeField] private TextMeshProUGUI scoreTxt;
     [SerializeField] private TextMeshProUGUI timerTxt;
+
 
 
     private void Update()
@@ -24,7 +26,11 @@ public class GameManager : MonoBehaviour
 
 
         if(totalCargo == hook.totalCargoReleased)
+        {
             sessionEnded = true;
+            UpdateSessionResults();
+            showAnalytics.UpdateAnalyticsDisplay(data);
+        }
 
         UpdateLiveScore();
         UpdateTimer();
@@ -53,16 +59,28 @@ public class GameManager : MonoBehaviour
 
 
 
-    public SessionGameData GetSessionResults()
+    public void UpdateSessionResults()
     {
 
-        SessionGameData data = new SessionGameData();
         data.time = System.TimeSpan.FromSeconds(time).ToString(@"mm\:ss");
         data.cargo = hook.totalCargoReleased;
         data.finalScore = Mathf.RoundToInt(liveScore + (hook.totalCargoReleased / time) * 100) * 10;
+        data.collisionCount = hook.ObstacleCollisionCount;
+        data.highestCargoStack = hook.highestCargoStack;
+        data.reps = (int)((hook.repCount) / 2) / 60;
+        data.totalHoldTime = System.TimeSpan.FromSeconds(hook.holdTimer).ToString(@"mm\:ss");
+        data.postureBreaks = (int) hook.postureBreaks / 120;
+        float approxReactionTime = 1 - (hook.totalCargoReleased / (hook.repCount / 2)) * 1.5f;
+        data.reactionTime = System.TimeSpan.FromSeconds(approxReactionTime).ToString(@"mm\:ss");
+        data.calories = (int)((((hook.repCount) / 2) / 60) * 0.4f);
+    }
 
+
+    public GameData GetSessionResults()
+    {
         return data;
     }
+
 
 
 

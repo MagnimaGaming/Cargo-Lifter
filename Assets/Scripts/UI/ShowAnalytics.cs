@@ -5,7 +5,7 @@ using TMPro;
 
 public class ShowAnalytics : MonoBehaviour
 {
-    [SerializeField] TextMeshProUGUI copltetionTime; 
+    [SerializeField] TextMeshProUGUI compltetionTime; 
     [SerializeField] TextMeshProUGUI collisionCount; 
     [SerializeField] TextMeshProUGUI highestCargoStack; 
     [SerializeField] TextMeshProUGUI earnings; 
@@ -17,16 +17,24 @@ public class ShowAnalytics : MonoBehaviour
     [SerializeField] TextMeshProUGUI reactionTime;
     [SerializeField] TextMeshProUGUI estimatedCalBurned;
 
+   
 
-
-    [SerializeField] GameManager gameManager;
-    [SerializeField] SessionGameData gameData;
-
-
-    private void Awake()
+    public void UpdateAnalyticsDisplay(GameData gameData)
     {
-        gameData = gameManager.GetSessionResults();
+        if (gameData == null) return;
+        //game related 
+        compltetionTime.text = gameData.time;
+        collisionCount.text = gameData.collisionCount.ToString();
+        highestCargoStack.text = gameData.highestCargoStack.ToString();
+        earnings.text = (gameData.cargo * gameData.moneyPerCargo).ToString();
+        score.text = gameData.finalScore.ToString();
 
+        //exercise related
+        sit2StandReps.text = gameData.reps.ToString();
+        totalHoldTime.text = gameData.totalHoldTime.ToString();
+        postureBreaks.text = gameData.postureBreaks.ToString();
+        reactionTime.text = gameData.reactionTime.ToString();
+        estimatedCalBurned.text = gameData.calories.ToString();
     }
 
 

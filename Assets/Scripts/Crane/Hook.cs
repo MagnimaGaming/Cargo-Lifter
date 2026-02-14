@@ -19,7 +19,11 @@ public class Hook : MonoBehaviour
     public Transform trolley;
     public int totalCargoReleased = 0;
     public bool isGameStarted = false;
-    public float ObstacleCollisionCount = 0;
+    public int ObstacleCollisionCount = 0;
+    public int highestCargoStack = 0;
+    public int repCount = 0;
+    public float holdTimer = 0f;
+    public int postureBreaks = 0;
 
 
     public bool isReleasing;
@@ -53,10 +57,16 @@ public class Hook : MonoBehaviour
         if(input <= 0.01f && input >= -0.01f && !crane.isCollided && isGameStarted)
         {
             crane.StartRotation();
+            repCount++; //considering sit  or stand rep, after make it devide by 2 to get actual reps
+            holdTimer += Time.deltaTime; //adding time when sitting or standing to give some approx hold time
         }
         else
         {   
             crane.StopRotation();
+            if(holdTimer < 2f)
+            {
+                postureBreaks++; //calculating posture breaks based on hold time
+            }
         }
 
 
@@ -125,6 +135,12 @@ public class Hook : MonoBehaviour
 
 
         totalCargoReleased += cargoStack.Count;
+
+        if(cargoStack.Count > highestCargoStack)
+        {
+            highestCargoStack = cargoStack.Count;
+        }
+
         foreach (GameObject c in cargoStack)
         {
             c.transform.SetParent(null, true);

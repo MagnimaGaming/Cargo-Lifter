@@ -1,7 +1,5 @@
-using UnityEngine;
-
 [System.Serializable]
-public class SessionGameData : MonoBehaviour
+public class GameData 
 {
     //game related data
     public int cargo;
@@ -12,10 +10,10 @@ public class SessionGameData : MonoBehaviour
 
     //physical body related data
     public int reps;
-    public float totalHoldTime;
+    public string totalHoldTime;
     public int postureBreaks;
-    public float reactionTime;
-    public float calories;
+    public string reactionTime;
+    public int calories;
 
     //normal data
     public int scorePerCargo = 100;

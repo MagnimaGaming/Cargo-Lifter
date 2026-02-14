@@ -19,19 +19,30 @@ public class uiManager : MonoBehaviour
     [SerializeField] public CraneRotate crane;
     [SerializeField] public Hook hook;
     [SerializeField] private GameManager gameManager;
+    bool leaderboardShown = false;
 
     private void Start()
     {
        GoToStart();
+       startMenu.SetActive(true);
+       diffSelectMenu.SetActive(false);
+       settingsMenu.SetActive(false);
+       pauseMenu.SetActive(false);
+
+       analyticsStatsTab.SetActive(false);
+       analyticsGraphTab.SetActive(false);
+       leaderBoard.SetActive(false);
+
     }
 
 
     private void Update()
     {
-        if (gameManager.sessionEnded)
+        if (gameManager.sessionEnded && !leaderboardShown)
         {
             Invoke("ShowLeaderBoard", 2F);
             crane.StopRotation();
+            leaderboardShown = true;
         }
     }
 
@@ -81,8 +92,8 @@ public class uiManager : MonoBehaviour
 
     public void GoToStart()
     {
-        startMenu.SetActive(true);
         analyticsGraphTab.SetActive(false);
+        startMenu.SetActive(true);
     }
 
     public void OpenSettingsMenu()
@@ -114,6 +125,10 @@ public class uiManager : MonoBehaviour
         //for now
         pauseMenu.SetActive(false);
     }
+    public void ShowLeaderBoard()
+    {
+        leaderBoard.SetActive(true);
+    }
 
     public void ShowAnalyticsStatsTab()
     {
@@ -129,10 +144,6 @@ public class uiManager : MonoBehaviour
     }
 
 
-    public void ShowLeaderBoard()
-    {
-        leaderBoard.SetActive(true);
-    }
 
 
 }
