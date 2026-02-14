@@ -5,7 +5,7 @@ public class SessionGameData : MonoBehaviour
 {
 
     public int cargo;
-    public float time;
+    public string time;
     public float finalScore;
 
     public int scorePerCargo = 100;

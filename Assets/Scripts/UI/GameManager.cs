@@ -54,10 +54,11 @@ public class GameManager : MonoBehaviour
 
     public SessionGameData GetSessionResults()
     {
+
         SessionGameData data = new SessionGameData();
-        data.time = time;
+        data.time = System.TimeSpan.FromSeconds(time).ToString(@"mm\:ss");
         data.cargo = hook.totalCargoReleased;
-        data.finalScore = liveScore + (hook.totalCargoReleased / time) * 100;
+        data.finalScore = Mathf.RoundToInt(liveScore + (hook.totalCargoReleased / time) * 100) * 10;
 
         return data;
     }
