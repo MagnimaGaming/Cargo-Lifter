@@ -41,8 +41,11 @@ public class uiManager : MonoBehaviour
         if (gameManager.sessionEnded && !leaderboardShown)
         {
             Invoke("ShowLeaderBoard", 2F);
-            crane.StopRotation();
             leaderboardShown = true;
+        }
+        if (leaderboardShown)
+        {
+            crane.StopRotation();
         }
     }
 
@@ -54,6 +57,7 @@ public class uiManager : MonoBehaviour
         startMenu.SetActive(false);
         diffSelectMenu.SetActive(true);
         analyticsStatsTab.SetActive(false);
+        analyticsGraphTab.SetActive(false);
     }
 
     public void QuitGame()
@@ -68,6 +72,7 @@ public class uiManager : MonoBehaviour
         pauseMenu.SetActive(false);
         crane.StartRotation();
         hook.isGameStarted = true;
+        crane.rotationSpeed = 25f;
     }
 
     public void LoadIntermediateLevel()
@@ -77,6 +82,8 @@ public class uiManager : MonoBehaviour
         pauseMenu.SetActive(false);
         crane.StartRotation();
         hook.isGameStarted = true;
+        crane.rotationSpeed = 45f;
+
     }
 
     public void LoadExpertLevel()
@@ -87,6 +94,7 @@ public class uiManager : MonoBehaviour
         pauseMenu.SetActive(false);
         crane.StartRotation();
         hook.isGameStarted = true;
+        crane.rotationSpeed = 60f;
 
     }
 

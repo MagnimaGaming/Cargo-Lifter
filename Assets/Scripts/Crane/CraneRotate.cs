@@ -4,7 +4,7 @@ public class CraneRotate : MonoBehaviour
 {
     public float startAngle = -90f;
     public float endAngle = 90f;
-    public float rotationSpeed = 30f;
+    public float rotationSpeed = 10f;
 
     float currentAngle;
     bool isRotating;
