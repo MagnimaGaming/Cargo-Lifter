@@ -117,8 +117,8 @@ public class uiManager : MonoBehaviour
 
     public void ShowAnalyticsStatsTab()
     {
-        analyticsStatsTab.SetActive(true);
         leaderBoard.SetActive(false);
+        analyticsStatsTab.SetActive(true);
 
     }
 

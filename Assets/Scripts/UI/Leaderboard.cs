@@ -1,27 +1,30 @@
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class LeaderBoard : MonoBehaviour
 {
+    public bool clear = false;
     public Transform entriesContainer;
     public Transform entryTemplate;
     private List<LeaderboardEntryData> leaderboardEntryDataList = new List<LeaderboardEntryData>();
     private List<Transform> leaderboardEntryTransformList = new List<Transform>();
     public  GameManager gameManager;
     private SessionGameData gameData;
+    public float templateHeight = 30f;
 
 
     private void Awake()
     {
+        
 
         gameData = gameManager.GetSessionResults();
 
         entryTemplate.gameObject.SetActive(false);
 
-        AddNewEntry("Bobby", gameData.time, gameData.moneyPerCargo * gameData.cargo, gameData.finalScore);
+        AddNewEntry("Bobby", gameData.time, gameData.moneyPerCargo * gameData.cargo, gameData.cargo, gameData.finalScore);
+
+
 
         string jsonString = PlayerPrefs.GetString("leaderboardEntries");
 
@@ -39,23 +42,31 @@ public class LeaderBoard : MonoBehaviour
 
     }
 
-    private void AddNewEntry(string name, float time, int earnings, float score)
+    private void Update()
+    {
+        if (clear)
+        {
+            ClearLeaderboardData();
+        }
+    }
+
+    private void AddNewEntry(string name, string time, int earnings,int cargo, float score)
     {
         //create entry
-        LeaderboardEntryData entry = new LeaderboardEntryData { playerName = name, time = time, earnings = earnings, score = score };
+        LeaderboardEntryData entry = new LeaderboardEntryData { playerName = name, time = time, earnings = earnings, cargo = cargo, score = score };
 
-        //load current entries data
+        //load current entries data if not present fill empty string
         string jsonString = PlayerPrefs.GetString("leaderboardEntries", "");
 
         LeaderboardEntries entries;
-        if (jsonString == null)
+        if (jsonString != null && jsonString != "")
         {
-            entries = new LeaderboardEntries();
-            entries.leaderboardEntryDataList = new List<LeaderboardEntryData>();
+            entries = JsonUtility.FromJson<LeaderboardEntries>(jsonString);
         }
         else
         {
-            entries = JsonUtility.FromJson<LeaderboardEntries>(jsonString);
+            entries = new LeaderboardEntries();
+            entries.leaderboardEntryDataList = new List<LeaderboardEntryData>();
         }
 
         //update and save
@@ -66,13 +77,10 @@ public class LeaderBoard : MonoBehaviour
 
     }
 
-
     private void CreateLeaderboardEntryTransform(LeaderboardEntryData leaderboardEntryData, Transform container, List<Transform> transformList)
     {
-        float templateHeight = 30f;
 
         Transform entryTransform = Instantiate(entryTemplate, container);
-
         RectTransform entryRectTransform = entryTransform.GetComponent<RectTransform>();
         entryRectTransform.anchoredPosition = new Vector2(0, -transformList.Count * templateHeight);
 
@@ -92,15 +100,18 @@ public class LeaderBoard : MonoBehaviour
         entryTransform.Find("Rank").GetComponent<TextMeshProUGUI>().text = rankString;
 
         string name = leaderboardEntryData.playerName;
-        entryTransform.Find("PlayerName").GetComponent<TextMeshProUGUI>().text = name;
+        entryTransform.Find("Name").GetComponent<TextMeshProUGUI>().text = name;
 
-        float time = leaderboardEntryData.time;
-        entryTransform.Find("CargoDelivered").GetComponent<TextMeshProUGUI>().text = time.ToString();
+        string time = leaderboardEntryData.time;
+        entryTransform.Find("Time").GetComponent<TextMeshProUGUI>().text = time;
 
-        int earnings = gameData.cargo * gameData.moneyPerCargo;
-        entryTransform.Find("NetEarnings").GetComponent<TextMeshProUGUI>().text = earnings.ToString();
+        int earnings = leaderboardEntryData.cargo * gameData.moneyPerCargo;
+        entryTransform.Find("Earnings").GetComponent<TextMeshProUGUI>().text = earnings.ToString();
 
-        float score = gameData.finalScore;
+        int cargo = leaderboardEntryData.cargo;
+        entryTransform.Find("Cargo Collected").GetComponent<TextMeshProUGUI>().text = cargo.ToString();
+
+        float score = leaderboardEntryData.score;
         entryTransform.Find("Score").GetComponent<TextMeshProUGUI>().text = score.ToString();
 
 
@@ -110,6 +121,12 @@ public class LeaderBoard : MonoBehaviour
         transformList.Add(entryTransform);
     }
 
+    public void ClearLeaderboardData()
+    {
+        PlayerPrefs.DeleteKey("leaderboardEntries");
+        PlayerPrefs.Save();
+        Debug.Log("Leaderboard data cleared");
+    }
 
     //created this separate class to make our list of entries to an obj, so we convert them into string using jsonUtility and save in playerPrefs
     private class LeaderboardEntries
@@ -122,8 +139,9 @@ public class LeaderBoard : MonoBehaviour
     public class LeaderboardEntryData
     {
         public string playerName;
-        public float time;
+        public string time;
         public int earnings;
+        public int cargo;
         public float score;
     }
 }
