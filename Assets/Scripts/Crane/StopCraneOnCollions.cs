@@ -6,6 +6,7 @@ public class StopCraneOnCollions : MonoBehaviour
 {
 
     [SerializeField] private CraneRotate crane;
+    [SerializeField] private Hook hook;
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -16,6 +17,7 @@ public class StopCraneOnCollions : MonoBehaviour
         {
             crane.StopRotation();
             crane.isCollided = true;
+            hook.ObstacleCollisionCount++;
         }
     }
 

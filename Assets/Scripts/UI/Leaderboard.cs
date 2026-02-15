@@ -10,7 +10,7 @@ public class LeaderBoard : MonoBehaviour
     private List<LeaderboardEntryData> leaderboardEntryDataList = new List<LeaderboardEntryData>();
     private List<Transform> leaderboardEntryTransformList = new List<Transform>();
     public  GameManager gameManager;
-    private SessionGameData gameData;
+    private GameData gameData;
     public float templateHeight = 30f;
 
 
