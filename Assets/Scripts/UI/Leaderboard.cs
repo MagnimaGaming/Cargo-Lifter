@@ -129,7 +129,7 @@ public class LeaderBoard : MonoBehaviour
     }
 
     //created this separate class to make our list of entries to an obj, so we convert them into string using jsonUtility and save in playerPrefs
-    private class LeaderboardEntries
+    public class LeaderboardEntries
     {
         public List<LeaderboardEntryData> leaderboardEntryDataList;
     }
