@@ -108,7 +108,6 @@ public class Hook : MonoBehaviour
 
         Vector3 localPos = Vector3.down * (index * cargoHeight + 0.5f * cargoHeight);
         cargo.transform.localPosition = localPos;
-        //cargo.transform.localRotation = Quaternion.identity;
 
         cargoStack.Add(cargo);
 

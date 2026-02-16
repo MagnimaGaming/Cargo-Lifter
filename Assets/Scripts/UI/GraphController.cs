@@ -20,8 +20,16 @@ public class GraphController : MonoBehaviour
     private void Start()
     {
         graphCotainer = GetComponent<RectTransform>();
-        List<int> valueList = new List<int>() { 5, 38, 56, 45, 78, 32, 12, 38, 56, 23, 98, 54, 5, 38, 56, 45 };
-        ShowGraph(valueList);
+        //List<int> valueList = new List<int>() { 5, 38, 56, 45, 78, 32, 12, 38, 56, 23, 98, 54, 5, 38, 56, 45 };
+        string jsonStrng = PlayerPrefs.GetString("leaderboardEntries");
+        Debug.Log(jsonStrng);
+        LeaderBoard.LeaderboardEntries entries = JsonUtility.FromJson<LeaderBoard.LeaderboardEntries>(jsonStrng);
+
+        Debug.Log(entries.leaderboardEntryDataList);
+        if(entries != null && entries.leaderboardEntryDataList != null && entries.leaderboardEntryDataList.Count != 0)
+        {
+            ShowGraph(entries.leaderboardEntryDataList);
+        }
     }
 
     GameObject CreateDot(Vector2 anchoredPosition)
@@ -39,16 +47,16 @@ public class GraphController : MonoBehaviour
     }
 
 
-    void ShowGraph(List<int> valueList)
+    void ShowGraph(List<LeaderBoard.LeaderboardEntryData> valueList)
     {
         float graphHeight = graphCotainer.sizeDelta.y;
-        float yMaximum = 100f;
+        float yMaximum = 5000f;
         float xSize = graphCotainer.sizeDelta.x / (valueList.Count + 1);
         GameObject lastDotGameObject = null;
         for (int i = 0; i < valueList.Count; i++)
         {
             float xPosition = xSize * i;
-            float yPosition = (valueList[i] / yMaximum) * graphHeight;
+            float yPosition = (valueList[i].score / yMaximum) * graphHeight;
             GameObject currentDotGameObject = CreateDot(new Vector2(xPosition, yPosition));
 
             if (lastDotGameObject != null)
@@ -72,42 +80,42 @@ public class GraphController : MonoBehaviour
 
         }
             
-            for (int y = 0; y <= numberOfYValues; y++)
+        for (int y = 0; y <= numberOfYValues; y++)
+        {
+            GameObject yLabel = Instantiate(yLabelTemplate);
+            yLabel.transform.SetParent(graphCotainer, false);
+
+            RectTransform yLabelRectTf = yLabel.GetComponent<RectTransform>();
+            yLabelRectTf.anchorMin = new Vector2(0, 0);
+            yLabelRectTf.anchorMax = new Vector2(0, 0);
+
+            float normalizedValue = y / numberOfYValues;
+
+            yLabelRectTf.anchoredPosition = new Vector2(-7, normalizedValue * graphHeight);
+
+            //this condition is to stop the creation of 0 label in y axis
+            if (y != 0)
             {
-                GameObject yLabel = Instantiate(yLabelTemplate);
-                yLabel.transform.SetParent(graphCotainer, false);
-
-                RectTransform yLabelRectTf = yLabel.GetComponent<RectTransform>();
-                yLabelRectTf.anchorMin = new Vector2(0, 0);
-                yLabelRectTf.anchorMax = new Vector2(0, 0);
-
-                float normalizedValue = y / numberOfYValues;
-
-                yLabelRectTf.anchoredPosition = new Vector2(-7, normalizedValue * graphHeight);
-
-                //this condition is to stop the creation of 0 label in y axis
-                if (y != 0)
-                {
-                    yLabel.gameObject.GetComponent<Text>().text = Mathf.Round(normalizedValue * yMaximum).ToString();
-                    yLabel.gameObject.SetActive(true);
-                }
-
-
-            //this condition is to stop the creation of last yDash and first yDash
-
-            if (!(y == 0 || y == numberOfYValues))
-                {
-                    GameObject yDash = Instantiate(yDashTemplate);
-                    yDash.transform.SetParent(graphCotainer, false);
-
-                    RectTransform yDashRectTf = yDash.GetComponent<RectTransform>();
-                    yDash.SetActive(true);
-                    yDashRectTf.anchoredPosition = new Vector2(graphCotainer.sizeDelta.x / 2f, normalizedValue * graphHeight);
-                    yDash.GetComponent<Image>().color = new Color(1, 1, 1, 0.7f);
-                    yDashRectTf.sizeDelta = new Vector2(graphCotainer.sizeDelta.x, 3f);
-                    yDashRectTf.anchorMin = new Vector2(0, 0);
-                    yDashRectTf.anchorMax = new Vector2(0, 0);
+                yLabel.gameObject.GetComponent<Text>().text = Mathf.Round(normalizedValue * yMaximum).ToString();
+                yLabel.gameObject.SetActive(true);
             }
+
+
+        //this condition is to stop the creation of last yDash and first yDash
+
+        if (!(y == 0 || y == numberOfYValues))
+            {
+                GameObject yDash = Instantiate(yDashTemplate);
+                yDash.transform.SetParent(graphCotainer, false);
+
+                RectTransform yDashRectTf = yDash.GetComponent<RectTransform>();
+                yDash.SetActive(true);
+                yDashRectTf.anchoredPosition = new Vector2(graphCotainer.sizeDelta.x / 2f, normalizedValue * graphHeight);
+                yDash.GetComponent<Image>().color = new Color(1, 1, 1, 0.7f);
+                yDashRectTf.sizeDelta = new Vector2(graphCotainer.sizeDelta.x, 3f);
+                yDashRectTf.anchorMin = new Vector2(0, 0);
+                yDashRectTf.anchorMax = new Vector2(0, 0);
+        }
                 
 
 
