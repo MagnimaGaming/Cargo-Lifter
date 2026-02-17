@@ -118,20 +118,21 @@ public class uiManager : MonoBehaviour
     public void OpenPauseMenu()
     {
         pauseMenu.SetActive(true);
-        
+        crane.StopRotation();
     }
 
     public void ResumeGame()
     {
         pauseMenu.SetActive(false);
+        crane.StartRotation();
     }
 
     public void RestartGame()
     {
-        //reload the current scene
-
-        //for now
         pauseMenu.SetActive(false);
+        LoadBeginnerLevel();
+        crane.ResetRotation();
+        crane.StartRotation();
     }
     public void ShowLeaderBoard()
     {
