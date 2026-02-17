@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class GraphController : MonoBehaviour
 {
@@ -75,7 +76,7 @@ public class GraphController : MonoBehaviour
             xLabelRectTf.anchorMax = new Vector2(0, 0);
 
             xLabelRectTf.anchoredPosition = new Vector2(xPosition + 12f, -7f);
-            xLabel.gameObject.GetComponent<Text>().text = i.ToString();
+            xLabel.gameObject.GetComponent<TextMeshProUGUI>().text = i.ToString();
             xLabel.gameObject.SetActive(true);
 
         }
@@ -96,7 +97,7 @@ public class GraphController : MonoBehaviour
             //this condition is to stop the creation of 0 label in y axis
             if (y != 0)
             {
-                yLabel.gameObject.GetComponent<Text>().text = Mathf.Round(normalizedValue * yMaximum).ToString();
+                yLabel.gameObject.GetComponent<TextMeshProUGUI>().text = Mathf.Round(normalizedValue * yMaximum).ToString();
                 yLabel.gameObject.SetActive(true);
             }
 
