@@ -72,7 +72,7 @@ public class uiManager : MonoBehaviour
         pauseMenu.SetActive(false);
         crane.StartRotation();
         hook.isGameStarted = true;
-        crane.rotationSpeed = 25f;
+        crane.rotationSpeed = 15f;
     }
 
     public void LoadIntermediateLevel()
@@ -82,7 +82,7 @@ public class uiManager : MonoBehaviour
         pauseMenu.SetActive(false);
         crane.StartRotation();
         hook.isGameStarted = true;
-        crane.rotationSpeed = 45f;
+        crane.rotationSpeed = 25f;
 
     }
 
@@ -94,7 +94,7 @@ public class uiManager : MonoBehaviour
         pauseMenu.SetActive(false);
         crane.StartRotation();
         hook.isGameStarted = true;
-        crane.rotationSpeed = 60f;
+        crane.rotationSpeed = 40f;
 
     }
 

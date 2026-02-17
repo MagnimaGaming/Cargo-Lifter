@@ -7,7 +7,7 @@ public class CraneRotate : MonoBehaviour
     public float rotationSpeed = 10f;
 
     float currentAngle;
-    bool isRotating;
+    public bool isRotating;
     public bool isCollided = false;
 
     void Start()
