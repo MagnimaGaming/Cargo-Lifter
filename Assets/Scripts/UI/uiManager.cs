@@ -72,7 +72,7 @@ public class uiManager : MonoBehaviour
         pauseMenu.SetActive(false);
         crane.StartRotation();
         hook.isGameStarted = true;
-        crane.rotationSpeed = 25f;
+        crane.rotationSpeed = 15f;
     }
 
     public void LoadIntermediateLevel()
@@ -82,7 +82,7 @@ public class uiManager : MonoBehaviour
         pauseMenu.SetActive(false);
         crane.StartRotation();
         hook.isGameStarted = true;
-        crane.rotationSpeed = 45f;
+        crane.rotationSpeed = 25f;
 
     }
 
@@ -94,7 +94,7 @@ public class uiManager : MonoBehaviour
         pauseMenu.SetActive(false);
         crane.StartRotation();
         hook.isGameStarted = true;
-        crane.rotationSpeed = 60f;
+        crane.rotationSpeed = 40f;
 
     }
 
@@ -118,20 +118,21 @@ public class uiManager : MonoBehaviour
     public void OpenPauseMenu()
     {
         pauseMenu.SetActive(true);
-        
+        crane.StopRotation();
     }
 
     public void ResumeGame()
     {
         pauseMenu.SetActive(false);
+        crane.StartRotation();
     }
 
     public void RestartGame()
     {
-        //reload the current scene
-
-        //for now
         pauseMenu.SetActive(false);
+        LoadBeginnerLevel();
+        crane.ResetRotation();
+        crane.StartRotation();
     }
     public void ShowLeaderBoard()
     {

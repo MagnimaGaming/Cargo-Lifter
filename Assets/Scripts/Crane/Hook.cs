@@ -11,7 +11,7 @@ public class Hook : MonoBehaviour
     BoxCollider cargoContainerCollider;
     public List<GameObject> cargoStack = new List<GameObject>();
 
-    private float cargoHeight = 1f;
+    public float cargoHeight = 1f;
     public float ropeSpeed = 2.0f;
     public float minLength = 1.0f;
     public float maxLength = 20.0f;
